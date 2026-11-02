@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Trello - ExoApi | Scrum Board - Desenvolvimento de APIs</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    body {
+      background: linear-gradient(135deg, #026aa7 0%, #005a8e 50%, #05446b 100%);
+      color: #172b4d;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: auto;
+    }
+
+    /* Top Navigation */
+    header {
+      background: rgba(0, 0, 0, 0.32);
+      backdrop-filter: blur(4px);
+      padding: 8px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: #fff;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.16);
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .trello-logo {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 800;
+      font-size: 19px;
+      letter-spacing: -0.5px;
+      color: #fff;
+    }
+
+    .trello-icon-box {
+      width: 22px;
+      height: 22px;
+      background: #fff;
+      border-radius: 4px;
+      display: flex;
+      gap: 3px;
+      padding: 3px;
+    }
+
+    .trello-bar-1 {
+      width: 7px;
+      height: 12px;
+      background: #026aa7;
+      border-radius: 2px;
+    }
+    .trello-bar-2 {
+      width: 7px;
+      height: 7px;
+      background: #026aa7;
+      border-radius: 2px;
+    }
+
+    .board-title {
+      font-size: 17px;
+      font-weight: 700;
+      background: rgba(255, 255, 255, 0.2);
+      padding: 6px 14px;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .tag-senai {
+      background: #eb5a46;
+      color: white;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .header-meta {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 13px;
+      opacity: 0.95;
+    }
+
+    .badge-sprint {
+      background: #61bd4f;
+      color: #0c2303;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* Sub Header Bar */
+    .sub-bar {
+      padding: 10px 20px;
+      background: rgba(0, 0, 0, 0.18);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: #fff;
+      font-size: 13px;
+    }
+
+    .sub-bar-left {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .sub-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(255, 255, 255, 0.15);
+      padding: 5px 12px;
+      border-radius: 4px;
+    }
+
+    /* Board Canvas */
+    .board-canvas {
+      flex: 1;
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      padding: 20px;
+      overflow-x: auto;
+    }
+
+    /* Column Lists */
+    .list-column {
+      background: #ebecf0;
+      border-radius: 10px;
+      width: 320px;
+      min-width: 320px;
+      max-height: calc(100vh - 140px);
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+    }
+
+    .list-header {
+      padding: 12px 14px 8px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .list-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: #172b4d;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .card-counter {
+      background: #dfe1e6;
+      color: #42526e;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 10px;
+    }
+
+    .list-cards {
+      padding: 0 10px 10px 10px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    /* Cards */
+    .card {
+      background: #ffffff;
+      border-radius: 6px;
+      padding: 10px 12px;
+      box-shadow: 0 1px 3px rgba(9, 30, 66, 0.25);
+      cursor: pointer;
+      border-left: 4px solid #0079bf;
+      transition: transform 0.15s ease;
+    }
+
+    .card.etapa-1 { border-left-color: #ff9f1a; } /* Preparação */
+    .card.etapa-2 { border-left-color: #0079bf; } /* Criação */
+    .card.etapa-3 { border-left-color: #00c2e0; } /* Métodos */
+    .card.etapa-4 { border-left-color: #eb5a46; } /* Retorno Erros */
+    .card.etapa-5 { border-left-color: #61bd4f; } /* Segurança */
+
+    .card-labels {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      margin-bottom: 8px;
+    }
+
+    .label {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 4px;
+      color: #fff;
+    }
+
+    .lbl-orange { background: #d97008; }
+    .lbl-blue   { background: #0079bf; }
+    .lbl-purple { background: #89609e; }
+    .lbl-green  { background: #519839; }
+    .lbl-red    { background: #b04632; }
+    .lbl-teal   { background: #008da6; }
+
+    .card-title {
+      font-size: 13.5px;
+      font-weight: 600;
+      color: #172b4d;
+      line-height: 1.35;
+      margin-bottom: 6px;
+    }
+
+    .card-desc {
+      font-size: 11.5px;
+      color: #5e6c84;
+      line-height: 1.4;
+      margin-bottom: 10px;
+    }
+
+    .card-badges {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+      font-size: 11.5px;
+      color: #5e6c84;
+      padding-top: 6px;
+      border-top: 1px solid #f4f5f7;
+    }
+
+    .badge-due {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 7px;
+      border-radius: 3px;
+      font-weight: 600;
+      font-size: 11px;
+    }
+
+    .badge-due.done {
+      background: #e3fcef;
+      color: #006644;
+    }
+
+    .badge-due.active {
+      background: #fffae6;
+      color: #974f0c;
+    }
+
+    .badge-due.planned {
+      background: #deebff;
+      color: #0747a6;
+    }
+
+    .badge-check {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-weight: 600;
+    }
+
+    .badge-check.complete {
+      color: #00875a;
+    }
+
+    .avatars {
+      margin-left: auto;
+      display: flex;
+    }
+
+    .avatar {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: #0052cc;
+      color: #fff;
+      font-size: 10px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1.5px solid #fff;
+    }
+
+    .avatar.green { background: #36b37e; }
+    .avatar.orange { background: #ffab00; color: #172b4d; }
+    .avatar.purple { background: #6554c0; }
+
+    /* Footer info */
+    footer {
+      background: rgba(0, 0, 0, 0.4);
+      color: #deebff;
+      font-size: 12px;
+      padding: 6px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Header -->
+  <header>
+    <div class="header-left">
+      <div class="trello-logo">
+        <div class="trello-icon-box">
+          <div class="trello-bar-1"></div>
+          <div class="trello-bar-2"></div>
+        </div>
+        Trello
+      </div>
+      <div class="board-title">
+        ExoApi • Gestão de Projetos e Controle de Acesso
+        <span class="tag-senai">SENAI UC14</span>
+      </div>
+    </div>
+    <div class="header-meta">
+      <div class="badge-sprint">
+        <svg width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
+          <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+          <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1H8a.5.5 0 0 1-.5-.5v-4A.5.5 0 0 1 8 4z"/>
+        </svg>
+        Cronograma Oficial: 15 Dias (02/11 a 16/11)
+      </div>
+    </div>
+  </header>
+
+  <!-- Sub Navigation Bar -->
+  <div class="sub-bar">
+    <div class="sub-bar-left">
+      <div class="sub-item">
+        <strong>Metodologia:</strong> Scrum / Kanban
+      </div>
+      <div class="sub-item">
+        <strong>Framework API:</strong> ASP.NET Core (.NET 8) Web API
+      </div>
+      <div class="sub-item">
+        <strong>Atividade 1:</strong> Planejamento das 5 Etapas com Prazos Delimitados
+      </div>
+    </div>
+    <div class="sub-bar-right">
+      <span>Sprint 1, 2 & 3 • Backlog & Entregas Incrementais</span>
+    </div>
+  </div>
+
+  <!-- Board Canvas -->
+  <main class="board-canvas">
+
+    <!-- COLUNA 1: BACKLOG DO PRODUTO -->
+    <section class="list-column">
+      <div class="list-header">
+        <h2 class="list-title">Product Backlog <span class="card-counter">2</span></h2>
+      </div>
+      <div class="list-cards">
+
+        <article class="card">
+          <div class="card-labels">
+            <span class="label lbl-purple">Requisito Móvel</span>
+            <span class="label lbl-blue">Modelagem</span>
+          </div>
+          <h3 class="card-title">Mapeamento de Entidades da ExoApi</h3>
+          <p class="card-desc">Definição dos campos obrigatórios: Projeto (Id, NomeDoProjeto, Area, Status) e Usuário (Id, Email, Senha).</p>
+          <div class="card-badges">
+            <span class="badge-due done">✓ Requisitos</span>
+            <span class="badge-check complete">☑ 4/4</span>
+            <div class="avatars"><div class="avatar">PO</div></div>
+          </div>
+        </article>
+
+        <article class="card">
+          <div class="card-labels">
+            <span class="label lbl-teal">Documentação</span>
+            <span class="label lbl-green">Swagger</span>
+          </div>
+          <h3 class="card-title">Documentação Interativa da API</h3>
+          <p class="card-desc">Configuração do Swagger UI / OpenAPI para documentar todas as rotas e respostas HTTP esperadas.</p>
+          <div class="card-badges">
+            <span class="badge-due planned">Prazo: 16/11</span>
+            <span class="badge-check">☐ 0/2</span>
+            <div class="avatars"><div class="avatar purple">DEV</div></div>
+          </div>
+        </article>
+
+      </div>
+    </section>
+
+    <!-- COLUNA 2: A FAZER (TO DO) -->
+    <section class="list-column">
+      <div class="list-header">
+        <h2 class="list-title">A Fazer (To Do) <span class="card-counter">2</span></h2>
+      </div>
+      <div class="list-cards">
+
+        <!-- ETAPA 5 OBRIGATÓRIA -->
+        <article class="card etapa-5">
+          <div class="card-labels">
+            <span class="label lbl-green">Etapa 5 Obrigatória</span>
+            <span class="label lbl-purple">Segurança / JWT</span>
+          </div>
+          <h3 class="card-title">Etapa 5: Implementação de Recursos de Segurança</h3>
+          <p class="card-desc">Implementar Autenticação JWT, endpoint POST /api/login, política CORS para mobile e restrição [Authorize] para DELETE e PUT de projetos.</p>
+          <div class="card-badges">
+            <span class="badge-due planned">Prazo: 15/11 a 16/11 (2 dias)</span>
+            <span class="badge-check">☑ 0/4</span>
+            <div class="avatars"><div class="avatar green">SEC</div></div>
+          </div>
+        </article>
+
+        <!-- ETAPA 4 OBRIGATÓRIA -->
+        <article class="card etapa-4">
+          <div class="card-labels">
+            <span class="label lbl-red">Etapa 4 Obrigatória</span>
+            <span class="label lbl-orange">Status Codes</span>
+          </div>
+          <h3 class="card-title">Etapa 4: Configuração de Mensagens de Retorno de Erros</h3>
+          <p class="card-desc">Padronizar respostas RESTful: 200 OK, 201 Created, 204 No Content, 400 Bad Request, 401 Unauthorized, 404 Not Found com tratamento global try/catch.</p>
+          <div class="card-badges">
+            <span class="badge-due planned">Prazo: 13/11 a 14/11 (2 dias)</span>
+            <span class="badge-check">☑ 0/3</span>
+            <div class="avatars"><div class="avatar orange">QA</div></div>
+          </div>
+        </article>
+
+      </div>
+    </section>
+
+    <!-- COLUNA 3: EM ANDAMENTO (DOING) -->
+    <section class="list-column">
+      <div class="list-header">
+        <h2 class="list-title">Em Andamento (Doing) <span class="card-counter">1</span></h2>
+      </div>
+      <div class="list-cards">
+
+        <!-- ETAPA 3 OBRIGATÓRIA -->
+        <article class="card etapa-3">
+          <div class="card-labels">
+            <span class="label lbl-blue">Etapa 3 Obrigatória</span>
+            <span class="label lbl-teal">Endpoints HTTP</span>
+          </div>
+          <h3 class="card-title">Etapa 3: Programação dos Métodos GET, POST, PUT e DELETE</h3>
+          <p class="card-desc">Desenvolver Controllers e Repositories com os métodos HTTP para Projetos e Usuários, retornando respostas no formato JSON.</p>
+          <div class="card-badges">
+            <span class="badge-due active">Prazo: 08/11 a 12/11 (5 dias)</span>
+            <span class="badge-check complete">☑ 4/6</span>
+            <div class="avatars"><div class="avatar purple">DEV</div></div>
+          </div>
+        </article>
+
+      </div>
+    </section>
+
+    <!-- COLUNA 4: EM TESTE / REVISÃO (QA) -->
+    <section class="list-column">
+      <div class="list-header">
+        <h2 class="list-title">Em Teste / QA <span class="card-counter">1</span></h2>
+      </div>
+      <div class="list-cards">
+
+        <article class="card etapa-3">
+          <div class="card-labels">
+            <span class="label lbl-purple">Insomnia / Testes</span>
+            <span class="label lbl-teal">SP1 - Ativ. 3 & 4</span>
+          </div>
+          <h3 class="card-title">Testes de Integração e Rotas no Insomnia</h3>
+          <p class="card-desc">Validação dos payloads de criação e consulta dos projetos via requisições HTTP locais.</p>
+          <div class="card-badges">
+            <span class="badge-due active">Prazo: 11/11 a 12/11</span>
+            <span class="badge-check complete">☑ 3/4</span>
+            <div class="avatars"><div class="avatar orange">QA</div></div>
+          </div>
+        </article>
+
+      </div>
+    </section>
+
+    <!-- COLUNA 5: CONCLUÍDO (DONE) -->
+    <section class="list-column">
+      <div class="list-header">
+        <h2 class="list-title">Concluído (Done) <span class="card-counter">3</span></h2>
+      </div>
+      <div class="list-cards">
+
+        <!-- ETAPA 2 OBRIGATÓRIA -->
+        <article class="card etapa-2">
+          <div class="card-labels">
+            <span class="label lbl-blue">Etapa 2 Obrigatória</span>
+            <span class="label lbl-green">Estrutura API</span>
+          </div>
+          <h3 class="card-title">Etapa 2: Criação do Projeto e Context</h3>
+          <p class="card-desc">Inicialização da solução Web API, inclusão do Entity Framework Core, criação do ExoContext e migração das tabelas Projetos e Usuarios.</p>
+          <div class="card-badges">
+            <span class="badge-due done">✓ Concluído: 07/11 (2 dias)</span>
+            <span class="badge-check complete">☑ 4/4</span>
+            <div class="avatars"><div class="avatar">DEV</div></div>
+          </div>
+        </article>
+
+        <!-- ETAPA 1 OBRIGATÓRIA -->
+        <article class="card etapa-1">
+          <div class="card-labels">
+            <span class="label lbl-orange">Etapa 1 Obrigatória</span>
+            <span class="label lbl-green">Ambiente Dev</span>
+          </div>
+          <h3 class="card-title">Etapa 1: Preparação do Ambiente de Desenvolvimento</h3>
+          <p class="card-desc">Configuração do SDK .NET / Node, VS Code, extensões C#, SQL Server e instalação do Insomnia Client.</p>
+          <div class="card-badges">
+            <span class="badge-due done">✓ Concluído: 05/11 (2 dias)</span>
+            <span class="badge-check complete">☑ 3/3</span>
+            <div class="avatars"><div class="avatar">DEV</div></div>
+          </div>
+        </article>
+
+        <!-- ETAPA 0: PLANEJAMENTO SCRUM -->
+        <article class="card">
+          <div class="card-labels">
+            <span class="label lbl-purple">Scrum / Ágil</span>
+            <span class="label lbl-green">SP1 - Ativ. 1</span>
+          </div>
+          <h3 class="card-title">Planejamento das Tarefas e Cronograma Scrum (Trello)</h3>
+          <p class="card-desc">Mapeamento dos 15 dias de projeto, decomposição das 5 etapas obrigatórias e critérios de aceitação.</p>
+          <div class="card-badges">
+            <span class="badge-due done">✓ Concluído: 03/11 (2 dias)</span>
+            <span class="badge-check complete">☑ 5/5</span>
+            <div class="avatars"><div class="avatar">SM</div></div>
+          </div>
+        </article>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer Info -->
+  <footer>
+    <div>
+      <strong>ExoApi Software House</strong> • Sistema Integrado de Projetos e Gestão de Usuários
+    </div>
+    <div>
+      Metodologia Ágil Scrum • Total: 15 Dias • Entregável: Print do Quadro Trello (Atividade 1)
+    </div>
+  </footer>
+
+</body>
+</html>
+

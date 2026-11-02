@@ -1,0 +1,302 @@
+{
+  "_type": "export",
+  "__export_format": 4,
+  "__export_date": "2026-11-02T11:20:00.000Z",
+  "__export_source": "insomnia.desktop.app:v8.6.1",
+  "resources": [
+    {
+      "_id": "wrk_exoapi",
+      "parentId": null,
+      "modified": 1730546400000,
+      "created": 1730546400000,
+      "name": "ExoApi - SENAI UC14",
+      "description": "Collection completa para testes dos endpoints da ExoApi (CRUD de Projetos, Usuários e Autenticação JWT).",
+      "scope": "collection",
+      "_type": "workspace"
+    },
+    {
+      "_id": "env_base",
+      "parentId": "wrk_exoapi",
+      "modified": 1730546400000,
+      "created": 1730546400000,
+      "name": "Base Environment",
+      "data": {
+        "base_url": "http://localhost:5000",
+        "token": ""
+      },
+      "dataPropertyOrder": {
+        "&": ["base_url", "token"]
+      },
+      "color": null,
+      "isPrivate": false,
+      "metaSortKey": 1730546400000,
+      "_type": "environment"
+    },
+    {
+      "_id": "fld_auth",
+      "parentId": "wrk_exoapi",
+      "modified": 1730546400000,
+      "created": 1730546400000,
+      "name": "1. Autenticação (Login)",
+      "description": "",
+      "environment": {},
+      "environmentPropertyOrder": null,
+      "metaSortKey": -100,
+      "_type": "request_group"
+    },
+    {
+      "_id": "req_login",
+      "parentId": "fld_auth",
+      "modified": 1730546400000,
+      "created": 1730546400000,
+      "url": "{{ _.base_url }}/api/login",
+      "name": "POST Login (Obter Token JWT)",
+      "description": "Autentica usuário e retorna o token de autorização.",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"email\": \"admin@exoapi.com\",\n  \"senha\": \"123456\"\n}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -100,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "fld_projetos",
+      "parentId": "wrk_exoapi",
+      "modified": 1730546400000,
+      "created": 1730546400000,
+      "name": "2. Projetos (CRUD)",
+      "description": "",
+      "environment": {},
+      "environmentPropertyOrder": null,
+      "metaSortKey": -90,
+      "_type": "request_group"
+    },
+    {
+      "_id": "req_proj_listar",
+      "parentId": "fld_projetos",
+      "modified": 1730546400000,
+      "created": 1730546400000,
+      "url": "{{ _.base_url }}/api/projetos",
+      "name": "GET Listar Todos os Projetos",
+      "description": "Retorna todos os projetos cadastrados.",
+      "method": "GET",
+      "body": {},
+      "parameters": [],
+      "headers": [],
+      "authentication": {},
+      "metaSortKey": -100,
+      "_type": "request"
+    },
+    {
+      "_id": "req_proj_buscar_id",
+      "parentId": "fld_projetos",
+      "modified": 1730546400000,
+      "created": 1730546400000,
+      "url": "{{ _.base_url }}/api/projetos/1",
+      "name": "GET Buscar Projeto por ID",
+      "description": "Recupera dados de um único projeto.",
+      "method": "GET",
+      "body": {},
+      "parameters": [],
+      "headers": [],
+      "authentication": {},
+      "metaSortKey": -90,
+      "_type": "request"
+    },
+    {
+      "_id": "req_proj_cadastrar",
+      "parentId": "fld_projetos",
+      "modified": 1730546400000,
+      "created": 1730546400000,
+      "url": "{{ _.base_url }}/api/projetos",
+      "name": "POST Cadastrar Novo Projeto",
+      "description": "Cadastra um novo projeto na base de dados.",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"nomeDoProjeto\": \"Novo App ExoApi Mobile\",\n  \"area\": \"Mobile\",\n  \"status\": true\n}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -80,
+      "_type": "request"
+    },
+    {
+      "_id": "req_proj_atualizar",
+      "parentId": "fld_projetos",
+      "modified": 1730546400000,
+      "created": 1730546400000,
+      "url": "{{ _.base_url }}/api/projetos/1",
+      "name": "PUT Atualizar Projeto Completo (Protegido)",
+      "description": "Atualiza projeto. Requer token JWT.",
+      "method": "PUT",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"nomeDoProjeto\": \"App Mobile ExoGestão Atualizado\",\n  \"area\": \"Mobile / React Native\",\n  \"status\": true\n}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.token }}"
+      },
+      "metaSortKey": -70,
+      "_type": "request"
+    },
+    {
+      "_id": "req_proj_deletar",
+      "parentId": "fld_projetos",
+      "modified": 1730546400000,
+      "created": 1730546400000,
+      "url": "{{ _.base_url }}/api/projetos/1",
+      "name": "DELETE Remover Projeto (Protegido)",
+      "description": "Remove um projeto. Requer token JWT.",
+      "method": "DELETE",
+      "body": {},
+      "parameters": [],
+      "headers": [],
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.token }}"
+      },
+      "metaSortKey": -60,
+      "_type": "request"
+    },
+    {
+      "_id": "fld_usuarios",
+      "parentId": "wrk_exoapi",
+      "modified": 1730546400000,
+      "created": 1730546400000,
+      "name": "3. Usuários (CRUD)",
+      "description": "",
+      "environment": {},
+      "environmentPropertyOrder": null,
+      "metaSortKey": -80,
+      "_type": "request_group"
+    },
+    {
+      "_id": "req_user_listar",
+      "parentId": "fld_usuarios",
+      "modified": 1730546400000,
+      "created": 1730546400000,
+      "url": "{{ _.base_url }}/api/usuarios",
+      "name": "GET Listar Todos os Usuários",
+      "description": "Recupera todos os usuários cadastrados.",
+      "method": "GET",
+      "body": {},
+      "parameters": [],
+      "headers": [],
+      "authentication": {},
+      "metaSortKey": -100,
+      "_type": "request"
+    },
+    {
+      "_id": "req_user_buscar_id",
+      "parentId": "fld_usuarios",
+      "modified": 1730546400000,
+      "created": 1730546400000,
+      "url": "{{ _.base_url }}/api/usuarios/1",
+      "name": "GET Buscar Usuário por ID",
+      "description": "Recupera dados de um usuário pelo ID.",
+      "method": "GET",
+      "body": {},
+      "parameters": [],
+      "headers": [],
+      "authentication": {},
+      "metaSortKey": -90,
+      "_type": "request"
+    },
+    {
+      "_id": "req_user_cadastrar",
+      "parentId": "fld_usuarios",
+      "modified": 1730546400000,
+      "created": 1730546400000,
+      "url": "{{ _.base_url }}/api/usuarios",
+      "name": "POST Cadastrar Novo Usuário",
+      "description": "Cadastra um novo usuário no sistema.",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"email\": \"novousuario@exoapi.com\",\n  \"senha\": \"senhaForte123\"\n}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -80,
+      "_type": "request"
+    },
+    {
+      "_id": "req_user_atualizar",
+      "parentId": "fld_usuarios",
+      "modified": 1730546400000,
+      "created": 1730546400000,
+      "url": "{{ _.base_url }}/api/usuarios/1",
+      "name": "PUT Atualizar Usuário",
+      "description": "Atualiza dados de login de um usuário.",
+      "method": "PUT",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"email\": \"admin.atualizado@exoapi.com\",\n  \"senha\": \"novaSenha123\"\n}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -70,
+      "_type": "request"
+    },
+    {
+      "_id": "req_user_deletar",
+      "parentId": "fld_usuarios",
+      "modified": 1730546400000,
+      "created": 1730546400000,
+      "url": "{{ _.base_url }}/api/usuarios/1",
+      "name": "DELETE Remover Usuário",
+      "description": "Remove um usuário do sistema.",
+      "method": "DELETE",
+      "body": {},
+      "parameters": [],
+      "headers": [],
+      "authentication": {},
+      "metaSortKey": -60,
+      "_type": "request"
+    }
+  ]
+}
+

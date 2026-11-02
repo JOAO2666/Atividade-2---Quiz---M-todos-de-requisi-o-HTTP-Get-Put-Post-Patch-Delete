@@ -1,66 +1,81 @@
-# UC14 - Desenvolvimento de APIs (SENAI) • Projeto ExoApi
+# UC14 - Desenvolvimento de APIs (SENAI) • Projeto ExoApi Completo
 
-Repositório destinado às atividades práticas e teóricas da Unidade Curricular **UC14 - Desenvolvimento de APIs**, com foco na metodologia ágil **Scrum** e nos conceitos fundamentais de requisições **HTTP (GET, POST, PUT, PATCH, DELETE)** para a empresa **ExoApi**.
+Repositório oficial contendo a resolução integral de **todas as atividades (1 a 6)** da situação-problema da empresa **ExoApi**, desenvolvidas para atender aos critérios da Unidade Curricular **UC14 - Desenvolvimento de APIs**.
 
 ---
 
-## 📌 Atividade 1: Planejamento Ágil com Scrum (Trello)
+## 📌 Visão Geral das Atividades Desenvolvidas
 
-### Cenário da ExoApi
-A **ExoApi** é uma empresa de desenvolvimento focada em integração de sistemas, performance e escalabilidade. O projeto consiste em desenvolver a Web API RESTful para um aplicativo mobile que gerencia todos os projetos da empresa e controla o acesso de usuários com autenticação segura.
+| Atividade | Descrição Oficial (SENAI) | Artefato / Implementação Entregue | Status |
+| :---: | :--- | :--- | :---: |
+| **SP1 - Ativ. 1** | **Planejar as tarefas com metodologia ágil Scrum** | Quadro visual Trello ([`quadro_trello_exoapi.png`](quadro_trello_exoapi.png)) + Documento de Sprints ([`PLANEJAMENTO_SCRUM_EXOAPI.md`](PLANEJAMENTO_SCRUM_EXOAPI.md)) | ✅ 100% |
+| **SP1 - Ativ. 2** | **Quiz - Métodos de requisição HTTP (GET, POST, PUT, PATCH, DELETE)** | Guia teórico + Gabarito comentado com 8 questões simuladas ([`ATIVIDADE_2_QUIZ_METODOS_HTTP.md`](ATIVIDADE_2_QUIZ_METODOS_HTTP.md)) | ✅ 100% |
+| **SP1 - Ativ. 3** | **Criar estrutura da API com Context e método GET para projetos** | Model `Projeto`, `ExoContext`, `ProjetoRepository` e endpoint `GET /api/projetos` | ✅ 100% |
+| **SP1 - Ativ. 4** | **Criar restante do CRUD de projetos e testar no Insomnia** | Métodos `POST`, `PUT`, `PATCH`, `DELETE` + Collection pronta ([`Insomnia_ExoApi_Collection.json`](Insomnia_ExoApi_Collection.json)) | ✅ 100% |
+| **SP1 - Ativ. 5** | **Criar CRUD de usuários** | Model `Usuario`, `UsuarioRepository` e endpoints `GET`, `POST`, `PUT`, `DELETE /api/usuarios` | ✅ 100% |
+| **SP1 - Ativ. 6** | **Criar método de Login com JWT e configurar CORS** | Controller de `Login` (`POST /api/login`), geração de Token JWT, CORS habilitado e proteção `[Authorize]` | ✅ 100% |
 
-### Quadro Scrum no Trello (15 Dias de Cronograma)
-Abaixo está a representação visual do quadro Scrum planejado para as entregas incrementais da API, com todas as **5 etapas obrigatórias** e seus respectivos prazos delimitados:
+---
+
+## 🖼️ Atividade 1: Quadro Scrum no Trello
+
+Quadro com as **5 etapas obrigatórias** e os **prazos delimitados** para entrega da API ao longo dos 15 dias:
 
 ![Quadro Scrum Trello - ExoApi](quadro_trello_exoapi.png)
 
-### As 5 Etapas Obrigatórias e Cronograma
-
-| Etapa | Tarefas Planejadas | Duração | Prazo Delimitado | Status |
-| :---: | :--- | :---: | :---: | :---: |
-| **Etapa 0** | **Planejamento Scrum:** Criação do Backlog, definição de Sprints e critérios de aceitação no Trello | 2 dias | 02/11 a 03/11 | Concluído |
-| **Etapa 1** | **Preparação do ambiente:** Instalação do SDK (.NET / Node), IDE (VS Code / Visual Studio), SQL Server e Insomnia | 2 dias | 04/11 a 05/11 | Concluído |
-| **Etapa 2** | **Criação do projeto:** Inicialização da Web API, Entity Framework Core, DbContext, Models e Migrations | 2 dias | 06/11 a 07/11 | Concluído |
-| **Etapa 3** | **Métodos GET, POST, PUT e DELETE:** Desenvolvimento dos endpoints CRUD de Projetos e de Usuários com retorno JSON | 5 dias | 08/11 a 12/11 | Em Andamento |
-| **Etapa 4** | **Retorno de erros e Status Codes:** Padronização RESTful (200, 201, 204, 400, 401, 404, 500) e try/catch global | 2 dias | 13/11 a 14/11 | A Fazer |
-| **Etapa 5** | **Recursos de segurança:** Autenticação JWT, endpoint `/api/login`, configuração CORS e restrição `[Authorize]` | 2 dias | 15/11 a 16/11 | A Fazer |
-
-> 📄 Detalhamento completo das User Stories, papéis e cerimônias em: [`PLANEJAMENTO_SCRUM_EXOAPI.md`](PLANEJAMENTO_SCRUM_EXOAPI.md).
-
 ---
 
-## 📚 Atividade 2: Guia de Métodos de Requisição HTTP (Guia de Estudos & Quiz)
+## 💻 Estrutura do Código-Fonte da API
 
-Resumo conceitual sobre os principais verbos HTTP utilizados no desenvolvimento de APIs RESTful:
+O projeto foi disponibilizado em duas implementações completas:
 
-| Método HTTP | Finalidade Principal | Idempotente? | Seguro? | Corpo (Body)? | Exemplo de Status Code |
-| :---: | :--- | :---: | :---: | :---: | :---: |
-| **GET** | Consultar/recuperar informações de um recurso sem alterar seu estado. | Sim | Sim | Não | `200 OK`, `404 Not Found` |
-| **POST** | Criar um novo recurso no servidor ou processar dados enviados. | Não | Não | Sim | `201 Created`, `400 Bad Request` |
-| **PUT** | Atualizar/substituir integralmente um recurso existente pelo ID informado. | Sim | Não | Sim | `200 OK`, `204 No Content` |
-| **PATCH** | Atualizar parcialmente campos específicos de um recurso existente. | Não | Não | Sim | `200 OK`, `204 No Content` |
-| **DELETE** | Remover permanentemente um recurso específico do servidor. | Sim | Não | Não | `200 OK`, `204 No Content` |
-
-### Códigos de Status HTTP Mais Utilizados
-- **200 OK:** Requisição bem-sucedida com retorno de dados.
-- **201 Created:** Novo recurso criado com sucesso no servidor.
-- **204 No Content:** Ação realizada com sucesso, sem corpo de retorno (comum em DELETE e PUT).
-- **400 Bad Request:** Dados da requisição inválidos ou mal formatados.
-- **401 Unauthorized:** Usuário não autenticado (falta token JWT ou token expirado).
-- **403 Forbidden:** Usuário autenticado, mas sem permissão para acessar o recurso.
-- **404 Not Found:** Recurso ou endpoint solicitado não foi encontrado.
-- **500 Internal Server Error:** Falha inesperada ou erro não tratado no servidor.
-
----
-
-## 📁 Estrutura de Arquivos
-
+### 1. Solução Oficial em C# / ASP.NET Core (`Exo.WebApi/`)
+Estrutura exigida pelos professores do SENAI:
 ```text
-├── 17379_7.pdf                   # Guia oficial de estudos e cronograma da UC14 (SENAI)
-├── PLANEJAMENTO_SCRUM_EXOAPI.md   # Documento com a metodologia Scrum e divisão das Sprints
-├── README.md                      # Apresentação do projeto e guia dos métodos HTTP
-├── quadro_trello_exoapi.html      # Interface web interativa do quadro Trello
-├── quadro_trello_exoapi.jpg       # Imagem em formato JPEG para submissão
-├── quadro_trello_exoapi.png       # Imagem em alta resolução (PNG) para submissão
-└── render_board.py                # Script em Python utilizado para renderizar o quadro
+Exo.WebApi/
+├── Controllers/
+│   ├── ProjetosController.cs   # Endpoints CRUD de Projetos (PUT e DELETE protegidos)
+│   ├── UsuariosController.cs   # Endpoints CRUD de Usuários
+│   └── LoginController.cs      # Autenticação e emissão do Token JWT
+├── Contexts/
+│   └── ExoContext.cs           # DbContext do Entity Framework Core
+├── Models/
+│   ├── Projeto.cs              # Id, NomeDoProjeto, Area, Status
+│   └── Usuario.cs              # Id, Email, Senha
+├── Repositories/
+│   ├── ProjetoRepository.cs    # Métodos de acesso aos dados de projetos
+│   └── UsuarioRepository.cs    # Métodos de acesso aos dados e login de usuários
+├── ViewModels/
+│   └── LoginViewModel.cs       # Validação de payload de login
+├── Program.cs                  # Injeção de dependência, CORS, JWT Bearer e Swagger
+└── appsettings.json            # Configurações e Connection String
 ```
+
+### 2. Servidor Executável Imediato em Node.js (`server.js`)
+Para testar os endpoints imediatamente sem necessidade de compilação:
+```bash
+# 1. Iniciar o servidor da API:
+npm start
+
+# 2. Executar a bateria de testes automatizados de todos os endpoints:
+node test_api.js
+```
+
+---
+
+## 🚀 Como Testar no Insomnia (Atividade 4)
+
+1. Abra o **Insomnia**.
+2. Clique em **Import** e selecione o arquivo [`Insomnia_ExoApi_Collection.json`](Insomnia_ExoApi_Collection.json).
+3. Todas as requisições estarão organizadas por pastas:
+   - **Autenticação:** `POST /api/login` (gera o token JWT).
+   - **Projetos:** `GET`, `POST`, `PUT` (protegido com Bearer Token) e `DELETE` (protegido).
+   - **Usuários:** `GET`, `POST`, `PUT`, `DELETE`.
+
+---
+
+## 🗄️ Banco de Dados SQL Server (`SQL/ExoApi_Database.sql`)
+
+Para criar a base no SQL Server Management Studio (SSMS):
+1. Abra o arquivo [`SQL/ExoApi_Database.sql`](SQL/ExoApi_Database.sql).
+2. Execute o script para criar a database `ExoApi`, as tabelas `Projetos` e `Usuarios`, e a carga inicial de dados.

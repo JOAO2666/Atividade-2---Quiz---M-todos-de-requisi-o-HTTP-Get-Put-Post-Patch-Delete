@@ -1,3 +1,13 @@
+# Node
+node_modules/
+npm-debug.log*
+
+# .NET / C#
+bin/
+obj/
+*.user
+*.suo
+
 # Python
 __pycache__/
 *.py[cod]
@@ -11,3 +21,5 @@ ENV/
 Thumbs.db
 .vscode/
 .idea/
+
+
